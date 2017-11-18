@@ -13,9 +13,7 @@
 
 (defonce !app
   (atom {:play? false
-         :grid (for [c (range 1 (inc num-of-grid-columns))
-                     r (range 1 (inc num-of-grid-rows))]
-                 [c r])
+         :character {}
          :pathway []}))
 
 
@@ -27,8 +25,8 @@
                        [{:event/hover-tile {:c c :r r }}]
                        (if (= [c r] (last (butlast (:pathway app))))
                          (update-in app [:pathway] pop)
-                         (update-in app [:pathway] conj [c r]))
-                       ))))
+                         (update-in app [:pathway] conj [c r]))))))
+
 
 (defn draw-grid
   [columns rows box-size app]
@@ -44,8 +42,17 @@
                  (fn []
                    (trigger! {:event/hover-tile {:c c :r r }}))
 
-                 :data-box-in-path (some #(= [c r] %) (:pathway app))
-                 }]))
+                 :data-box-in-path (some #(= [c r] %) (:pathway app))}]))
+
+
+(defn draw-character
+  [box-size app]
+  (let [c (first (first (:pathway app)))
+        r (second (first (:pathway app)))]
+  [:img {:src "content/banana.svg"
+           :style {:width "40px"
+                   :height "40px"
+                   :-webkit-transform (str "translate3d(" (+ 5 (* box-size c)) "px, " (+ 5 (* box-size r)) "px, 0px)")}}]))
 
 
 (rum/defc *app
@@ -56,7 +63,9 @@
    (draw-grid num-of-grid-columns
               num-of-grid-rows
               grid-box-size
-              app)])
+              app)
+
+   (draw-character grid-box-size app)])
 
 
 (defn render!
