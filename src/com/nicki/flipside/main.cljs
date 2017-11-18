@@ -25,13 +25,10 @@
                 (match [event]
 
                        [{:event/hover-tile {:c c :r r }}]
-                       (if (= [c r] (butlast (last (:pathway app))))
-                         (do
-                           (p (str (:pathway app)))
-                           (update-in app [:pathway] pop))
-                         (do
-                           (p (str (:pathway app)))
-                           (update-in app [:pathway] conj [c r])))))))
+                       (if (= [c r] (last (butlast (:pathway app))))
+                         (update-in app [:pathway] pop)
+                         (update-in app [:pathway] conj [c r]))
+                       ))))
 
 (defn draw-grid
   [columns rows box-size app]
@@ -65,7 +62,8 @@
 (defn render!
   [app]
   (.render js/ReactDOM (*app trigger! app)
-           (.getElementById js/document "container")))
+           (.getElementById js/document "container"))
+  (p (str (:pathway app))))
 
 
 (defonce hack
