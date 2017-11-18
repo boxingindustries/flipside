@@ -13,8 +13,20 @@
 
 (defonce !app
   (atom {:play? false
-         :character {}
+         :character {:c nil :r nil}
          :pathway []}))
+
+(defn move-character
+  "move the character to the next tile in the pathway"
+  [app]
+  (-> app
+      (assoc-in [:character :c] (first (nth (:pathway app) 1)))
+      (assoc-in [:character :r] (second (nth (:pathway app) 1)))))
+
+(defn drop-first-tile
+  "drop the first tile from the pathway vector"
+  [app]
+  (update-in app [:pathway] rest))
 
 
 (defn trigger!
@@ -22,9 +34,21 @@
   (swap! !app (fn [app]
                 (match [event]
 
+                       [{:event/tick nil}]
+                       (if (< 1 (count (:pathway app)))
+                         (do
+                           (p (str (:character app)))
+                           (move-character app)
+                           (drop-first-tile app))
+                         app)
+
                        [{:event/hover-tile {:c c :r r }}]
                        (if (= [c r] (last (butlast (:pathway app))))
+
+                         ;;remove the latest / last tile in the pathway
                          (update-in app [:pathway] pop)
+
+                         ;;add the new tile to the end of the pathway vector
                          (update-in app [:pathway] conj [c r]))))))
 
 
@@ -37,11 +61,8 @@
                          :-webkit-transform (str "translate3d(" (* box-size c) "px, "
                                                  (* box-size r) "px, 0px)")}
                  :id (str c "-" r)
-
-                 :on-mouse-over
-                 (fn []
-                   (trigger! {:event/hover-tile {:c c :r r }}))
-
+                 :on-mouse-over (fn []
+                                  (trigger! {:event/hover-tile {:c c :r r }}))
                  :data-box-in-path (some #(= [c r] %) (:pathway app))}]))
 
 
@@ -81,4 +102,5 @@
     (add-watch !app :re-render (fn [_ _ old new] (render! new)))
 
     ;;change something so that the app renders the first time
-    (swap! !app assoc :play? true)))
+    ;;step forward regularly
+    (js/setInterval #(trigger! {:event/tick nil}) 200)))
