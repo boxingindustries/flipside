@@ -104,3 +104,18 @@
     ;;change something so that the app renders the first time
     ;;step forward regularly
     (js/setInterval #(trigger! {:event/tick nil}) 200)))
+
+;;;;;;Tests;;;;;;;
+
+;; when you add a tile to the pathway it is adjacent (up/down/left/right) to the previous tile
+
+;; the character is always on a tile adjacent to the beginning of the pathway
+
+;; you can only add a tile to the pathway when you are located on the final tile of the pathway OR when there is no pathway and you are located on the character's tile
+
+;; if you move to the previous tile in the pathway OR to the character's tile, the tile you just left is removed from the pathway (retracing)
+
+;; you cannot move to a diagonal tile
+
+;; there cannot be a gap in the pathway - each tile in the pathway must be adjacent (up/down/left/right) to the tiles it neighbors in the pathway list
+
