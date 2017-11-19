@@ -14,7 +14,8 @@
 (defonce !app
   (atom {:play? false
          :character {:c nil :r nil}
-         :pathway []}))
+         :pathway []
+         :points []}))
 
 (defn move-character
   "move the character to the next tile in the pathway"
@@ -37,10 +38,15 @@
                        [{:event/tick nil}]
                        (if (< 1 (count (:pathway app)))
                          (do
-                           (p (str (:character app)))
+                           (p (str "character: "(:character app)))
                            (move-character app)
                            (drop-first-tile app))
                          app)
+
+                       [{:event/draw-line vec}]
+                       (do
+                         (p (str "points: " vec))
+                         (update-in app [:points] conj vec))
 
                        [{:event/hover-tile {:c c :r r }}]
                        (if (= [c r] (last (butlast (:pathway app))))
@@ -75,18 +81,36 @@
                    :height "40px"
                    :-webkit-transform (str "translate3d(" (+ 5 (* box-size c)) "px, " (+ 5 (* box-size r)) "px, 0px)")}}]))
 
+(defn vec-to-string
+  [vec]
+  (reduce (fn [string x]
+            (let [[a b] x]
+              (str string a "," b " "))) "" vec))
+
 
 (rum/defc *app
   [trigger! app]
 
   [:.app
 
-   (draw-grid num-of-grid-columns
-              num-of-grid-rows
-              grid-box-size
-              app)
+;;   (draw-grid num-of-grid-columns
+;;              num-of-grid-rows
+;;              grid-box-size
+;;              app)
+;;
+;;   (draw-character grid-box-size app)
 
-   (draw-character grid-box-size app)])
+   [:svg
+    {:view-box "0 0 200 200"
+     :style {:width "100%"
+             :height "100%"}
+     :on-click (fn [e]
+                 (trigger! {:event/draw-line [(.-clientX e) (.-clientY e)]}))}
+    [:polyline
+     {:points (vec-to-string (:points app))
+      :fill "none"
+      :stroke "black"
+      :stroke-width "1"}]]])
 
 
 (defn render!
