@@ -26,7 +26,7 @@
 (defn drop-first-tile
   "drop the first tile from the pathway vector"
   [app]
-  (update-in app [:pathway] rest))
+  (update-in app [:pathway] #(vec (rest %))))
 
 (defn add-to-pathway
   [app c r]
@@ -110,8 +110,11 @@
     (add-watch !app :re-render (fn [_ _ old new] (render! new)))
 
     ;;change something so that the app renders the first time
+;;    (swap! !app conj {:fun 23})
+    
     ;;step forward regularly
-    (js/setInterval #(trigger! {:event/tick nil}) 200)))
+    (js/setInterval #(trigger! {:event/tick nil}) 600)
+    ))
 
 (defn adjacent-tiles?
   "given two tiles in the grid, check if they share an edge"
