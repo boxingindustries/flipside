@@ -20,8 +20,8 @@
   "move the character to the next tile in the pathway"
   [app]
   (-> app
-      (assoc-in [:character :c] (first (nth (:pathway app) 1)))
-      (assoc-in [:character :r] (second (nth (:pathway app) 1)))))
+      (assoc-in [:character :c] (first (nth (:pathway app) 0)))
+      (assoc-in [:character :r] (second (nth (:pathway app) 0)))))
 
 (defn drop-first-tile
   "drop the first tile from the pathway vector"
@@ -38,6 +38,15 @@
     ;;add the new tile to the end of the pathway vector
     (update-in app [:pathway] conj [c r])))
 
+(defn tick
+  [app]
+  "move the character and drop the first tile from the pathway"
+  (if (< 1 (count (:pathway app)))
+    (-> app
+        (move-character)
+        (drop-first-tile))
+    app))
+
 
 (defn trigger!
   [event]
@@ -45,12 +54,7 @@
                 (match [event]
 
                        [{:event/tick nil}]
-                       (if (< 1 (count (:pathway app)))
-                         (do
-                           (p (str (:character app)))
-                           (move-character app)
-                           (drop-first-tile app))
-                         app)
+                       (tick app)
 
                        [{:event/hover-tile {:c c :r r }}]
                        (add-to-pathway app c r)))))
