@@ -161,8 +161,9 @@
                 (= ,, [[1 1] [2 1]]))
     (p "Test failed: a tile can't be added to a non-empty pathway")))
 
-;; when you add a tile to the pathway it is adjacent (up/down/left/right) to the previous tile (if there are tiles in the pathway)
-;; this really needs to be a generative test
+;; when you add a tile to the pathway it should be adjacent (up/down/left/right) to the previous tile (if there are tiles in the pathway), there cannot be a gap in the pathway and you cannot move diagonally
+
+;; check that you're not adding diagonal tiles
 (let [fake-app {:pathway []}]
   (when-not (-> fake-app
                 ;;add the first tile to the pathway
@@ -173,6 +174,19 @@
                 (:pathway ,,)
                 (= ,, [[1 1]]))
     (p "Test failed: you're letting diagonal tiles be added to the pathway")))
+
+
+;; check that you're not adding a tile that creates a gap in the pathway
+(let [fake-app {:pathway []}]
+  (when-not (-> fake-app
+                ;;add the first tile to the pathway
+                (add-to-pathway ,, 1 1)
+                ;;add a second tile to the pathway
+                (add-to-pathway ,, 3 2)
+                ;;check that the second tile wasn't added
+                (:pathway ,,)
+                (= ,, [[1 1]]))
+    (p "Test failed: you're letting gaps be created in the pathway")))
 
 ;; the character is always on a tile adjacent to the beginning of the pathway when the pathway is non-empty
 (let [fake-app {:pathway [[1 1]]
@@ -192,11 +206,8 @@
                 (adjacent-tiles? ,, [1 2]))
     (p "Test failed: your character might not be adjacent to the beginning of the pathway")))
 
-;; you can only add a tile to the pathway when you are located on the final tile of the pathway OR when there is no pathway and you are located on the character's tile
+;; you can only add a tile to the pathway when your pointer is located on the final tile of the pathway OR when there is no pathway and your pointer is located on the character's tile
 
-;; if you move to the previous tile in the pathway OR to the character's tile, the tile you just left is removed from the pathway (retracing)
+;; if you move your pointer to the previous tile in the pathway OR to the character's tile, the tile you just left is removed from the pathway (retracing)
 
-;; you cannot move to a diagonal tile
-
-;; there cannot be a gap in the pathway - each tile in the pathway must be adjacent (up/down/left/right) to the tiles it neighbors in the pathway list
 
