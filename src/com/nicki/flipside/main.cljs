@@ -28,15 +28,51 @@
   [app]
   (update-in app [:pathway] #(vec (rest %))))
 
+(defn adjacent-tiles?
+  "given two tiles in the grid, check if they share an edge"
+  [vec1 vec2]
+  (let [[c1 r1] vec1
+        [c2 r2] vec2]
+
+    (cond
+
+      ;; if either is an empty vector, go ahead and say true
+      (or (= [] vec1) (= [] vec2))
+      true
+
+      ;; if either is nil, go ahead and say true
+      (or (= nil vec1) (= nil vec2))
+      true
+
+      ;; if the vectors are the same, then false
+      (= [c1 r1] [c2 r2])
+      false
+
+      ;; if the tiles share a column, the rows should be next to each other
+      (and (= c1 c2) (<= -1 (- r1 r2) 1))
+      true
+
+      ;; if the tiles share a row, the columns should be next to each other
+      (and (= r1 r2) (<= -1 (- c1 c2) 1))
+      true
+
+      :else
+      false)))
+
 (defn add-to-pathway
   [app c r]
-  (if (= [c r] (last (butlast (:pathway app))))
+  (cond
 
     ;;remove the latest / last tile in the pathway
+    (= [c r] (last (butlast (:pathway app))))
     (update-in app [:pathway] pop)
 
     ;;add the new tile to the end of the pathway vector
-    (update-in app [:pathway] conj [c r])))
+    (adjacent-tiles? [c r] (last (:pathway app)))
+    (update-in app [:pathway] conj [c r])
+
+    :else
+    app))
 
 (defn tick
   [app]
@@ -111,34 +147,10 @@
 
     ;;change something so that the app renders the first time
 ;;    (swap! !app conj {:fun 23})
-    
+
     ;;step forward regularly
-    (js/setInterval #(trigger! {:event/tick nil}) 600)
-    ))
+    (js/setInterval #(trigger! {:event/tick nil}) 600)))
 
-(defn adjacent-tiles?
-  "given two tiles in the grid, check if they share an edge"
-  [vec1 vec2]
-  (let [[c1 r1] vec1
-        [c2 r2] vec2]
-    ;;first, make sure the two arguments are not the same
-    (if (not= [c1 r1] [c2 r2])
-      ;;now, check to see if the tiles share a row or column
-      (cond
-
-        ;; if the tiles share a column, the rows should be next to each other
-        (and (= c1 c2)
-             (<= -1 (- r1 r2) 1))
-        true
-
-        ;; if the tiles share a row, the columns should be next to each other
-        (and (= r1 r2)
-             (<= -1 (- c1 c2) 1))
-        true
-
-        :else
-        false)
-      false)))
 
 ;;;;;;Tests;;;;;;;
 
