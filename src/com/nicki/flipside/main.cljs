@@ -142,39 +142,55 @@
 ;; a tile can be added to an empty pathway
 (let [fake-app {:pathway []}]
   (when-not (-> fake-app
-              ;;add the first tile to the pathway
-              (add-to-pathway ,, 1 1)
-              ;;check that the tile was added
-              (:pathway ,,)
-              (= ,, [[1 1]]))
+                ;;add the first tile to the pathway
+                (add-to-pathway ,, 1 1)
+                ;;check that the tile was added
+                (:pathway ,,)
+                (= ,, [[1 1]]))
     (p "Test failed: a tile can't be added to an empty pathway")))
 
 ;; a tile can be added to a non-empty pathway
 (let [fake-app {:pathway []}]
   (when-not (-> fake-app
-              ;;add the first tile to the pathway
-              (add-to-pathway ,, 1 1)
-              ;;add a second tile to the pathway
-              (add-to-pathway ,, 2 1)
-              ;;check that the second tile was added
-              (:pathway ,,)
-              (= ,, [[1 1] [2 1]]))
+                ;;add the first tile to the pathway
+                (add-to-pathway ,, 1 1)
+                ;;add a second tile to the pathway
+                (add-to-pathway ,, 2 1)
+                ;;check that the second tile was added
+                (:pathway ,,)
+                (= ,, [[1 1] [2 1]]))
     (p "Test failed: a tile can't be added to a non-empty pathway")))
 
 ;; when you add a tile to the pathway it is adjacent (up/down/left/right) to the previous tile (if there are tiles in the pathway)
 ;; this really needs to be a generative test
 (let [fake-app {:pathway []}]
   (when-not (-> fake-app
-          ;;add the first tile to the pathway
-          (add-to-pathway ,, 1 1)
-          ;;add a second tile to the pathway
-          (add-to-pathway ,, 2 2)
-          ;;check that the second tile wasn't added
-          (:pathway ,,)
-          (= ,, [[1 1]]))
+                ;;add the first tile to the pathway
+                (add-to-pathway ,, 1 1)
+                ;;add a second tile to the pathway
+                (add-to-pathway ,, 2 2)
+                ;;check that the second tile wasn't added
+                (:pathway ,,)
+                (= ,, [[1 1]]))
     (p "Test failed: you're letting diagonal tiles be added to the pathway")))
 
 ;; the character is always on a tile adjacent to the beginning of the pathway when the pathway is non-empty
+(let [fake-app {:pathway [[1 1]]
+                :character {:c nil :r nil}}
+      character-pos (fn [map] (let [c (:c (:character map))
+                                    r (:r (:character map))] [c r]))]
+  (when-not (-> fake-app
+                ;;add the first tile to the pathway
+                (add-to-pathway ,, 1 2)
+                ;;add a second tile to the pathway
+                (add-to-pathway ,, 2 2)
+                ;;run the tick function
+                (tick ,,)
+                ;;grab the character position
+                (character-pos ,,)
+                ;;check if the character is adjacent to the beginning of the pathway
+                (adjacent-tiles? ,, [1 2]))
+    (println "Test failed: your character might not be adjacent to the beginning of the pathway")))
 
 ;; you can only add a tile to the pathway when you are located on the final tile of the pathway OR when there is no pathway and you are located on the character's tile
 
