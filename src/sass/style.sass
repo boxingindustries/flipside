@@ -6,12 +6,70 @@
   bottom: 2rem
   right: 2rem
 
-.grid-box
+.grid-box-positioner
   position: absolute
+
+.grid-box
   background: hsla(10, 20%, 20%, .5)
   border: 1px solid white
+  width: 100%
+  height: 100%
   &[data-box-in-path="true"]
     background-color: yellowgreen
+    margin: auto
+    position: relative
+    animation: flip 1s
+  &[data-box-in-path="false"]
+    background-color: hsla(10, 20%, 20%, .5)
+    margin: auto
+    position: relative
+    animation: flip-back 1s
+
+@keyframes flip
+  0%
+    transform: skewY(0deg)
+    background-color: hsla(10, 20%, 20%, .5)
+  49%
+    transform: skewY(50deg)
+    width: 20%
+    height: 120%
+    top: -10%
+    background-color: hsla(10, 20%, 20%, .5)
+  50%
+    transform: skewY(120deg)
+    width: 20%
+    height: 120%
+    top: -10%
+    background-color: yellowgreen
+  100%
+    transform: skewY(180deg)
+    width: 100%
+    height: 100%
+    top: 0%
+    background-color: yellowgreen
+
+@keyframes flip-back
+  0%
+    transform: skewY(180deg)
+    background-color: yellowgreen
+  49%
+    transform: skewY(120deg)
+    width: 20%
+    height: 120%
+    top: -10%
+    background-color: yellowgreen
+  50%
+    transform: skewY(50deg)
+    width: 20%
+    height: 120%
+    top: -10%
+    background-color: hsla(10, 20%, 20%, .5)
+  100%
+    transform: skewY(0deg)
+    width: 100%
+    height: 100%
+    top: 0%
+    background-color: hsla(10, 20%, 20%, .5)
 
 img
   pointer-events: none
