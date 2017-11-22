@@ -18,12 +18,12 @@
     background-color: yellowgreen
     margin: auto
     position: relative
-    animation: flip 1s
+    animation: flip 400ms
   &[data-box-in-path="false"]
     background-color: hsla(10, 20%, 20%, .5)
     margin: auto
     position: relative
-    animation: flip-back 1s
+    animation: flip-back 400ms
 
 @keyframes flip
   0%
@@ -73,3 +73,4 @@
 
 img
   pointer-events: none
+  transition: transform 400ms linear

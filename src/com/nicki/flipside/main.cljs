@@ -151,7 +151,7 @@
 ;;    (swap! !app conj {:fun 23})
 
     ;;step forward regularly
-    (js/setInterval #(trigger! {:event/tick nil}) 600)))
+    (js/setInterval #(trigger! {:event/tick nil}) 400)))
 
 
 ;;;;;;Tests;;;;;;;
