@@ -102,7 +102,7 @@
     [:.grid-box-positioner {:style {:width (str box-size "px")
                                     :height (str box-size "px")
                                     :-webkit-transform (str "translate3d(" (* box-size c) "px, "
-                                                            (* box-size r) "px, 0px) scale(1)")}
+                                                            (* box-size r) "px, 0px")}
                             :id (str c "-" r)}
      [:.grid-box {:on-mouse-over (fn []
                                    (trigger! {:event/hover-tile {:c c :r r }}))
@@ -127,12 +127,13 @@
   [:.app
 
    [:div#grid
-    (draw-grid num-of-grid-columns
-               num-of-grid-rows
-               grid-box-size
-               app)]
+    [:.perspective
+     (draw-grid num-of-grid-columns
+                num-of-grid-rows
+                grid-box-size
+                app)
 
-   (draw-character grid-box-size app)])
+     (draw-character grid-box-size app)]]])
 
 
 (defn render!
