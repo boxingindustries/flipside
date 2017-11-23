@@ -99,17 +99,16 @@
   [columns rows box-size app]
   (for [c (range 1 (inc columns))
         r (range 1 (inc rows))]
-    [:.grid
-     [:.grid-box-positioner {:style {:width (str box-size "px")
-                                     :height (str box-size "px")
-                                     :-webkit-transform (str "translate3d(" (* box-size c) "px, "
-                                                             (* box-size r) "px, 0px) scale(1)")}
-                             :id (str c "-" r)}
-      [:.grid-box {:on-mouse-over (fn []
-                                    (trigger! {:event/hover-tile {:c c :r r }}))
-                   :data-box-in-path (if (some #(= [c r] %) (:pathway app))
-                                       true
-                                       false)}]]]))
+    [:.grid-box-positioner {:style {:width (str box-size "px")
+                                    :height (str box-size "px")
+                                    :-webkit-transform (str "translate3d(" (* box-size c) "px, "
+                                                            (* box-size r) "px, 0px) scale(1)")}
+                            :id (str c "-" r)}
+     [:.grid-box {:on-mouse-over (fn []
+                                   (trigger! {:event/hover-tile {:c c :r r }}))
+                  :data-box-in-path (if (some #(= [c r] %) (:pathway app))
+                                      true
+                                      false)}]]))
 
 
 (defn draw-character
@@ -127,10 +126,11 @@
 
   [:.app
 
-   (draw-grid num-of-grid-columns
-              num-of-grid-rows
-              grid-box-size
-              app)
+   [:div#grid
+    (draw-grid num-of-grid-columns
+               num-of-grid-rows
+               grid-box-size
+               app)]
 
    (draw-character grid-box-size app)])
 
