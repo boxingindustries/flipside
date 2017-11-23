@@ -111,6 +111,17 @@
                                        true
                                        false)}]]]))
 
+(defn draw-animation-frames
+  [columns rows box-size app]
+  (for [c (range 1 (inc columns))
+        r (range 1 (inc rows))]
+    [:.grid-box-positioner {:style {:width (str box-size "px")
+                                    :height (str box-size "px")
+                                    :-webkit-transform (str "translate3d(" (* box-size c) "px, "
+                                                            (* box-size r) "px, 0px) scale(1)")}
+                            :id (str c "+" r)}
+     [:.grid-box-animate {:style {:transform (str "skewY(" (* 180 (/ (+ 0.0 c) columns)) "deg)")}}]]))
+
 
 (defn draw-character
   [box-size app]
@@ -127,12 +138,21 @@
 
   [:.app
 
-   (draw-grid num-of-grid-columns
-              num-of-grid-rows
-              grid-box-size
-              app)
+   [:div#gridone
+;;    (draw-grid num-of-grid-columns
+;;               num-of-grid-rows
+;;               grid-box-size
+;;               app)
+    ]
 
-   (draw-character grid-box-size app)])
+;;   (draw-character grid-box-size app)
+
+   [:div#gridanimate
+    (draw-animation-frames 18
+                           1
+                           grid-box-size
+                           app)]]
+   )
 
 
 (defn render!
