@@ -108,7 +108,9 @@
                                    (trigger! {:event/hover-tile {:c c :r r }}))
                   :data-box-in-path (if (some #(= [c r] %) (:pathway app))
                                       true
-                                      false)}]]))
+                                      false)}
+      [:.front]
+      [:.back]]]))
 
 
 (defn draw-character
@@ -127,13 +129,12 @@
   [:.app
 
    [:div#grid
-    [:.perspective
-     (draw-grid num-of-grid-columns
-                num-of-grid-rows
-                grid-box-size
-                app)
+    (draw-grid num-of-grid-columns
+               num-of-grid-rows
+               grid-box-size
+               app)
 
-     (draw-character grid-box-size app)]]])
+    (draw-character grid-box-size app)]])
 
 
 (defn render!
