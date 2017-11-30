@@ -1180,4 +1180,4 @@ return (parseInt(cljs.core.subs.call(null,[cljs.core.str.cljs$core$IFn$_invoke$a
 });
 goog.exportSymbol('datascript.core.squuid_time_millis', datascript.core.squuid_time_millis);
 
-//# sourceMappingURL=core.js.map?rel=1509941611766
+//# sourceMappingURL=core.js.map?rel=1511925494214
