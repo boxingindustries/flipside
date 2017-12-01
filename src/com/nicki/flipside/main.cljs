@@ -95,32 +95,32 @@
                        [{:event/hover-tile {:c c :r r }}]
                        (add-to-pathway app c r)))))
 
-(defn draw-grid
+(rum/defc *grid
   [columns rows box-size app]
-  (for [c (range 1 (inc columns))
-        r (range 1 (inc rows))]
-    [:.grid-box-positioner {:style {:width (str box-size "px")
-                                    :height (str box-size "px")
-                                    :-webkit-transform (str "translate3d(" (* box-size c) "px, "
-                                                            (* box-size r) "px, 0px")}
-                            :id (str c "-" r)}
-     [:.grid-box {:on-mouse-over (fn []
-                                   (trigger! {:event/hover-tile {:c c :r r }}))
-                  :data-box-in-path (if (some #(= [c r] %) (:pathway app))
-                                      true
-                                      false)}
-      [:.front]
-      [:.back]]]))
+  [:.grid
+   (for [c (range 1 (inc columns))
+         r (range 1 (inc rows))]
+     [:.grid-box-positioner {:style {:width (str box-size "px")
+                                     :height (str box-size "px")
+                                     :transform (str "translate3d(" (* box-size c) "px, "
+                                                             (* box-size r) "px, 0px")}}
+      [:.grid-box {:on-mouse-over (fn []
+                                    (trigger! {:event/hover-tile {:c c :r r }}))
+                   :data-box-in-path (if (some #(= [c r] %) (:pathway app))
+                                       true
+                                       false)}
+       [:.front]
+       [:.back]]])])
 
 
-(defn draw-character
+(rum/defc *character
   [box-size app]
   (let [c (first (first (:pathway app)))
         r (second (first (:pathway app)))]
   [:img {:src "content/banana.svg"
            :style {:width "40px"
                    :height "40px"
-                   :-webkit-transform (str "translate3d(" (+ 5 (* box-size c)) "px, " (+ 5 (* box-size r)) "px, 0px)")}}]))
+                   :transform (str "translate3d(" (+ 5 (* box-size c)) "px, " (+ 5 (* box-size r)) "px, 0px)")}}]))
 
 
 (rum/defc *app
@@ -128,13 +128,12 @@
 
   [:.app
 
-   [:div#grid
-    (draw-grid num-of-grid-columns
+   (*grid num-of-grid-columns
                num-of-grid-rows
                grid-box-size
                app)
 
-    (draw-character grid-box-size app)]])
+   (*character grid-box-size app)])
 
 
 (defn render!
