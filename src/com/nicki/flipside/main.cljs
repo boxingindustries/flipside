@@ -126,7 +126,7 @@
 (rum/defc *app
   [trigger! app]
 
-  [:.app
+  [:.app {:on-mouse-move (fn [e] (trigger! {:event/mouser {:x (.-clientX e) :y (.-clientY e)}}))}
 
    (*grid num-of-grid-columns
                num-of-grid-rows
@@ -219,7 +219,7 @@
                 ;;run the tick function
                 (tick ,,)
                 ;;grab the character position
-                (character-pos ,,)
+                (character-map-to-vec ,,)
                 ;;check if the character is adjacent to the beginning of the pathway
                 (adjacent-tiles? ,, [1 2]))
     (p "Test failed: your character might not be adjacent to the beginning of the pathway")))
