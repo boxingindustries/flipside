@@ -228,4 +228,20 @@
 
 ;; if you move your pointer to the previous tile in the pathway OR to the character's tile, the tile you just left is removed from the pathway (retracing)
 
-
+;; if the banana runs into a bomb, the game is over
+(let [fake-app {:pathway [[1 1]]
+                :character {:c nil :r nil}
+                :bombs [[2 2]]
+                :dead? false}]
+  (when-not (-> fake-app
+                ;;add the first tile to the pathway
+                (add-to-pathway ,, 1 2)
+                ;;add a second tile to the pathway
+                (add-to-pathway ,, 2 2)
+                ;;run the tick function
+                (tick ,,)
+                ;;run the tick function
+                (tick ,,)
+                ;;is the character dead?
+                (:dead? ,,))
+    (p "Test failed: your character should die when it runs into a bomb")))
