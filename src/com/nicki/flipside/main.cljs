@@ -209,7 +209,7 @@
 ;; the character is always on a tile adjacent to the beginning of the pathway when the pathway is non-empty
 (let [fake-app {:pathway [[1 1]]
                 :character {:c nil :r nil}}
-      character-pos (fn [map] (let [c (:c (:character map))
+      character-map-to-vec (fn [map] (let [c (:c (:character map))
                                     r (:r (:character map))] [c r]))]
   (when-not (-> fake-app
                 ;;add the first tile to the pathway
