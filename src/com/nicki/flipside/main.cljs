@@ -14,7 +14,8 @@
 (defonce !app
   (atom {:play? false
          :character {:c nil :r nil}
-         :pathway []}))
+         :pathway []
+         :mouse []}))
 
 (defn move-character
   "move the character to the next tile in the pathway"
@@ -74,6 +75,10 @@
     :else
     app))
 
+(defn add-to-mouse-list
+  [app c r]
+  (update-in app [:mouse] conj [c r]))
+
 (defn tick
   [app]
   "move the character and drop the first tile from the pathway"
@@ -90,10 +95,15 @@
                 (match [event]
 
                        [{:event/tick nil}]
-                       (tick app)
+                       (do
+;;                         (p (str (:mouse app)))
+                         (tick app))
 
                        [{:event/hover-tile {:c c :r r }}]
-                       (add-to-pathway app c r)))))
+                       (add-to-pathway app c r)
+
+                       [{:event/mouser {:x x :y y}}]
+                       (add-to-mouse-list app x y)))))
 
 (rum/defc *grid
   [columns rows box-size app]
