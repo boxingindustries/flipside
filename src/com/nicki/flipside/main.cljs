@@ -126,7 +126,7 @@
 (rum/defc *app
   [trigger! app]
 
-  [:.app {:on-mouse-move (fn [e] (trigger! {:event/mouser {:x (.-clientX e) :y (.-clientY e)}}))}
+  [:.app
 
    (*grid num-of-grid-columns
                num-of-grid-rows
