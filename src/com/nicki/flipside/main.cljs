@@ -12,9 +12,18 @@
 (def num-of-grid-columns 10)
 
 (defonce !app
-  (atom {:play? false
+  (atom {:play? true
          :character {:c nil :r nil}
-         :pathway []}))
+         :pathway []
+         :bombs [[2 2]]
+         :dead? false}))
+
+(defn character-map-to-vec
+  "create a vector of the character's coordinates"
+  [app]
+  (let [c (:c (:character app))
+        r (:r (:character app))]
+    [c r]))
 
 (defn move-character
   "move the character to the next tile in the pathway"
@@ -22,6 +31,22 @@
   (-> app
       (assoc-in [:character :c] (first (nth (:pathway app) 0)))
       (assoc-in [:character :r] (second (nth (:pathway app) 0)))))
+
+(defn matching-tiles?
+  "check if a tile matches any tile in a vector of tiles"
+  [tile vec]
+  (if (true? (some #(= tile %) vec))
+    true
+    false))
+
+(defn check-for-bomb
+  "return an updated app map if the character has moved onto a tile occupied by a bomb"
+  [app]
+  (if (matching-tiles? (character-map-to-vec app) (:bombs app))
+    (-> app
+        (assoc-in [:dead?] true)
+        (assoc-in [:play?] false))
+    app))
 
 (defn drop-first-tile
   "drop the first tile from the pathway vector"
@@ -80,7 +105,8 @@
   (if (< 1 (count (:pathway app)))
     (-> app
         (move-character)
-        (drop-first-tile))
+        (drop-first-tile)
+        (check-for-bomb))
     app))
 
 
@@ -133,7 +159,9 @@
                grid-box-size
                app)
 
-   (*character grid-box-size app)])
+   (*character grid-box-size app)
+
+   [:.deadMsg (if (:dead? app) "Oops! You're dead!")]])
 
 
 (defn render!
@@ -208,9 +236,7 @@
 
 ;; the character is always on a tile adjacent to the beginning of the pathway when the pathway is non-empty
 (let [fake-app {:pathway [[1 1]]
-                :character {:c nil :r nil}}
-      character-map-to-vec (fn [map] (let [c (:c (:character map))
-                                    r (:r (:character map))] [c r]))]
+                :character {:c nil :r nil}}]
   (when-not (-> fake-app
                 ;;add the first tile to the pathway
                 (add-to-pathway ,, 1 2)
@@ -231,13 +257,11 @@
 ;; if the banana runs into a bomb, the game is over
 (let [fake-app {:pathway [[1 1]]
                 :character {:c nil :r nil}
-                :bombs [[2 2]]
+                :bombs [[1 2]]
                 :dead? false}]
   (when-not (-> fake-app
                 ;;add the first tile to the pathway
                 (add-to-pathway ,, 1 2)
-                ;;add a second tile to the pathway
-                (add-to-pathway ,, 2 2)
                 ;;run the tick function
                 (tick ,,)
                 ;;run the tick function
