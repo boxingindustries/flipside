@@ -127,6 +127,12 @@
   [trigger! app]
 
   [:.app
+   [:.intro
+    [:h1 "Flipside"]
+    [:p "This is a prototype game mechanic. Move your mouse around over the tiles to create a path for the banana to follow."]
+    [:p "You can read about the inspiration and how this was built "
+     [:a {:href "http://www.nickivance.com/writing/20171128_animating-tile-flip/index.html"}
+      "in an article on my website."]]]
 
    (*grid num-of-grid-columns
                num-of-grid-rows
